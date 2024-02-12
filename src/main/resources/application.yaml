@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://localhost:10003/target
+    username: root
+    password: rootroot
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    dbcp2:
+      validation-query: SELECT 1
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+config:
+  kafka:
+    bootstrap-servers: localhost:9092
+    schema-registry-url: http://localhost:8081
+    specific-avro-reader: true
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+#      properties:
+#        security.protocol: PLAINTEXT
+#        spring.deserializer.value.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+
+#    producer:
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      properties:
+#        security.protocol: PLAINTEXT
+#        acks: all
+#        retries: 3
+#        compression-type: gzip
