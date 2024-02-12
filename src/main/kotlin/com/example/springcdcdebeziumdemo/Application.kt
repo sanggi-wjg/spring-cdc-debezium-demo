@@ -8,7 +8,6 @@ import org.springframework.boot.runApplication
 @ConfigurationPropertiesScan("com.example.springcdcdebeziumdemo")
 @SpringBootApplication(
     scanBasePackages = ["com.example.springcdcdebeziumdemo"],
-//    exclude = [KafkaAutoConfiguration::class]
 )
 class Application
 
