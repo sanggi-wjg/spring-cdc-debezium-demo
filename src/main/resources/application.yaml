@@ -15,7 +15,7 @@ spring:
 
 config:
   kafka:
-    schema-registry-url: http://localhost:8081
+    schema-registry-url: http://localhost:8083
     specific-avro-reader: true
     bootstrap-servers: localhost:9092
     consumer:
@@ -28,11 +28,11 @@ config:
 #        security.protocol: PLAINTEXT
 #        spring.deserializer.value.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
 
-#    producer:
-#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-#      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-#      properties:
-#        security.protocol: PLAINTEXT
-#        acks: all
-#        retries: 3
-#        compression-type: gzip
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        security.protocol: PLAINTEXT
+        acks: all
+        retries: 3
+        compression-type: gzip

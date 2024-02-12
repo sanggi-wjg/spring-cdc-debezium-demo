@@ -10,6 +10,7 @@ data class KafkaProperty(
     val schemaRegistryUrl: String,
     val specificAvroReader: Boolean,
     val consumer: ConsumerProperty,
+    val producer: ProducerProperty,
 ) {
     data class ConsumerProperty(
         val autoOffsetReset: String,
@@ -17,5 +18,14 @@ data class KafkaProperty(
         val valueDeserializer: String,
         val concurrency: Int,
         val properties: Map<String, String> = mapOf(),
+    )
+
+    data class ProducerProperty(
+        val keySerializer: String,
+        val valueSerializer: String,
+        val properties: Map<String, String> = mapOf(),
+        val acks: String,
+        val retries: Int,
+        val compressionType: String,
     )
 }
