@@ -11,18 +11,17 @@ spring:
       maximum-pool-size: 10
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
 
 config:
   kafka:
-    bootstrap-servers: localhost:9092
     schema-registry-url: http://localhost:8081
     specific-avro-reader: true
+    bootstrap-servers: localhost:9092
     consumer:
       auto-offset-reset: earliest
-      key-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 #      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
 #      properties:
 #        security.protocol: PLAINTEXT
