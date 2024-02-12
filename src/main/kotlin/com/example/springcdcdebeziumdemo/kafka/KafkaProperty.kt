@@ -3,7 +3,7 @@ package com.example.springcdcdebeziumdemo.kafka
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.ConfigurationProperties
 
-@ConditionalOnProperty(prefix = "config.kafka", name = ["bootstrap-server"], havingValue = "kafka")
+@ConditionalOnProperty(prefix = "config.kafka", name = ["schema-registry-url"])
 @ConfigurationProperties(prefix = "config.kafka")
 data class KafkaProperty(
     val bootstrapServers: String,
@@ -15,6 +15,7 @@ data class KafkaProperty(
         val autoOffsetReset: String,
         val keyDeserializer: String,
         val valueDeserializer: String,
+        val concurrency: Int,
         val properties: Map<String, String> = mapOf(),
     )
 }

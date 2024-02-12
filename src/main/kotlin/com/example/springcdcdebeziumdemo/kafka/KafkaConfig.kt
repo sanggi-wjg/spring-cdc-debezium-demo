@@ -7,17 +7,16 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.kafka.annotation.EnableKafka
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 
 @EnableKafka
 @Configuration
 @EnableConfigurationProperties(KafkaProperty::class)
-@ConditionalOnProperty(prefix = "config.kafka", name = ["bootstrap-server"], havingValue = "kafka")
 class KafkaConfig(
     private val property: KafkaProperty,
 ) {
-
     @Bean
     fun consumerFactory(): ConsumerFactory<String, Any> {
         return DefaultKafkaConsumerFactory(
@@ -31,5 +30,13 @@ class KafkaConfig(
                 KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG to property.specificAvroReader,
             )
         )
+    }
+
+    @Bean
+    fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Any> {
+        val factory: ConcurrentKafkaListenerContainerFactory<String, Any> = ConcurrentKafkaListenerContainerFactory()
+        factory.consumerFactory = consumerFactory()
+        factory.setConcurrency(property.consumer.concurrency)
+        return factory
     }
 }
