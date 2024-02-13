@@ -22,7 +22,7 @@ class BasicConsumerService(
 
     @KafkaListener(
         topics = [KafkaTopic.DEMO_USER],
-        groupId = KafkaGroup.SPRING_DEMO
+        groupId = KafkaGroup.SPRING_DEMO,
     )
     override fun changedDataCapture(@Payload message: String) {
         log.info(message)

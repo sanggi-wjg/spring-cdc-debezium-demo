@@ -22,17 +22,17 @@ config:
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-      concurrency: 3
 #      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-#      properties:
-#        security.protocol: PLAINTEXT
-#        spring.deserializer.value.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+      concurrency: 1
+      properties:
+        security.protocol: PLAINTEXT
+        spring.deserializer.value.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
 
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      retries: 3
+      compression-type: gzip
       properties:
         security.protocol: PLAINTEXT
-        acks: all
-        retries: 3
-        compression-type: gzip

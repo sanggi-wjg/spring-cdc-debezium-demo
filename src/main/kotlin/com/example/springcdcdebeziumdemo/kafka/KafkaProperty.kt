@@ -23,9 +23,9 @@ data class KafkaProperty(
     data class ProducerProperty(
         val keySerializer: String,
         val valueSerializer: String,
-        val properties: Map<String, String> = mapOf(),
         val acks: String,
         val retries: Int,
         val compressionType: String,
+        val properties: Map<String, String> = mapOf(),
     )
 }

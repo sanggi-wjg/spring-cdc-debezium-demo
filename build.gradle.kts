@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "3.2.2"
     id("io.spring.dependency-management") version "1.1.4"
-    id("com.github.davidmc24.gradle.plugin.avro") version "1.9.1"
+    id("com.github.davidmc24.gradle.plugin.avro") version "1.8.0"
     kotlin("jvm") version "1.9.22"
     kotlin("plugin.spring") version "1.9.22"
     kotlin("plugin.jpa") version "1.9.22"
@@ -42,13 +42,13 @@ dependencies {
 
 avro {
     setCreateSetters(false)
-    fieldVisibility.set("PRIVATE")
     outputCharacterEncoding.set("UTF-8")
+    fieldVisibility.set("PRIVATE")
 }
 
 configurations {
     all {
-        exclude("org.springframework.boot", "spring-boot-starter-logging")
+//        exclude("org.springframework.boot", "spring-boot-starter-logging")
         exclude("org.apache.logging.log4j", "log4j-to-slf4j")
         exclude("ch.qos.logback", "logback-classic")
     }
@@ -64,34 +64,3 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
-
-//avro {
-//    setCreateSetters(false)
-//    outputCharacterEncoding.set("UTF-8")
-//}
-
-//schemaRegistry {
-//    url.set("http://localhost:8083")
-//    download {
-//        subjectPattern(inputPattern = "schema.data-key", file = "com.example.springcdcdebeziumdemo")
-//    }
-//}
-
-//val schemaRegistry = "http://localhost:8083" // 스키마 레지스트리 주소
-//val downloadInputs = listOf(
-//    "schema.data-key",
-//    "schema.data-value"
-//)
-//val avroDestination = "org/main/avro" //avro 스키마가 저장될 프로젝트상의 위치
-//schemaRegistry {
-//    url.set(schemaRegistry)
-//    download {
-//        // 패턴에 해당하는 서브젝트(스키마)를 다운로드
-//        downloadInputs.forEach {
-//            subjectPattern(
-//                inputPattern = it,
-//                file = avroDestination
-//            )
-//        }
-//    }
-//}
