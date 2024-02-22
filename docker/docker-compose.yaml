@@ -1,0 +1,166 @@
+version: "3.8"
+services:
+  cdc-demo-mysql-master:
+    image: mysql:8.0
+    container_name: cdc-demo-mysql-master
+    networks:
+      - cdc_network
+    ports:
+      - "10001:3306"
+    environment:
+      - MYSQL_DATABASE=demo
+      - MYSQL_ROOT_PASSWORD=rootroot
+    volumes:
+      - ./config/master-my.cnf:/etc/mysql/my.cnf
+
+  cdc-demo-mysql-slave:
+    image: mysql:8.0
+    container_name: cdc-demo-mysql-slave
+    networks:
+      - cdc_network
+    depends_on:
+      - cdc-demo-mysql-master
+    ports:
+      - "10002:3306"
+    environment:
+      - MYSQL_DATABASE=demo
+      - MYSQL_ROOT_PASSWORD=rootroot
+    volumes:
+      - ./config/slave-my.cnf:/etc/mysql/my.cnf
+
+  cdc-demo-mysql-target:
+    image: mysql:8.0
+    container_name: cdc-demo-mysql-target
+    networks:
+      - cdc_network
+    depends_on:
+      - cdc-demo-mysql-master
+      - cdc-demo-mysql-slave
+    ports:
+      - "10003:3306"
+    environment:
+      - MYSQL_DATABASE=target
+      - MYSQL_ROOT_PASSWORD=rootroot
+    volumes:
+      - ./config/master-my.cnf:/etc/mysql/my.cnf
+
+  cdc-zookeeper:
+    image: debezium/zookeeper:2.5.1.Final # https://hub.docker.com/r/debezium/zookeeper
+    platform: linux/arm64/v8
+    hostname: cdc-zookeeper
+    container_name: cdc-zookeeper
+    networks:
+      - cdc_network
+    depends_on:
+      - cdc-demo-mysql-master
+      - cdc-demo-mysql-slave
+      - cdc-demo-mysql-target
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+
+  cdc-kafka:
+    image: debezium/kafka:2.5.1.Final # https://hub.docker.com/r/debezium/kafka
+    platform: linux/arm64/v8
+    container_name: cdc-kafka
+    networks:
+      - cdc_network
+    depends_on:
+      - cdc-demo-mysql-master
+      - cdc-demo-mysql-slave
+      - cdc-demo-mysql-target
+      - cdc-zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      ZOOKEEPER_CONNECT: cdc-zookeeper:2181
+      KAFKA_LISTENERS: INTERNAL://cdc-kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://cdc-kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry
+    container_name: schema-registry
+    networks:
+      - cdc_network
+    ports:
+      - "8181:8181"
+      - "8081:8081"
+    environment:
+      - SCHEMA_REGISTRY_HOST_NAME=schema-registry
+      - SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL=cdc-zookeeper:2181
+      - SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS=cdc-kafka:29092
+      - SCHEMA_REGISTRY_LISTENERS=http://schema-registry:8081
+      - SCHEMA_REGISTRY_DEBUG=true
+
+  cdc-kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: cdc-kafka-ui
+    networks:
+      - cdc_network
+    depends_on:
+      - cdc-demo-mysql-master
+      - cdc-demo-mysql-slave
+      - cdc-demo-mysql-target
+      - cdc-zookeeper
+      - cdc-kafka
+    ports:
+      - "8084:8080"
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=Local-Cluster
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=cdc-kafka:29092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=cdc-zookeeper:2181
+
+  debezium-connector:
+    image: debezium/connect:2.5.1.Final # https://hub.docker.com/r/debezium/connect
+    platform: linux/arm64/v8
+    container_name: debezium-connector
+    networks:
+      - cdc_network
+    ports:
+      - "8083:8083"
+    depends_on:
+      - cdc-demo-mysql-master
+      - cdc-demo-mysql-slave
+      - cdc-demo-mysql-target
+      - cdc-zookeeper
+      - cdc-kafka
+    environment:
+      - BOOTSTRAP_SERVERS=cdc-kafka:9092
+      - GROUP_ID=1
+      - CONFIG_STORAGE_TOPIC=cdc_connect_config_storage
+      - OFFSET_STORAGE_TOPIC=cdc_connect_offset_storage
+      - STATUS_STORAGE_TOPIC=cdc_connect_status_storage
+      - ENABLE_DEBEZIUM_KC_REST_EXTENSION=true
+      - ENABLE_DEBEZIUM_SCRIPTING=true
+      - CONNECT_REST_EXTENSION_CLASSES=io.debezium.kcrestextension.DebeziumConnectRestExtension
+      - LOG_LEVEL=INFO
+      - KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+      - VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+      - INTERNAL_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+      - INTERNAL_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+
+  debezium-ui:
+    image: debezium/debezium-ui:2.1.2.Final # https://hub.docker.com/r/debezium/debezium-ui
+    platform: linux/arm64/v8
+    container_name: debezium-ui
+    networks:
+      - cdc_network
+    ports:
+      - "8082:8080"
+    depends_on:
+      - cdc-demo-mysql-master
+      - cdc-demo-mysql-slave
+      - cdc-demo-mysql-target
+      - cdc-zookeeper
+      - cdc-kafka
+      - debezium-connector
+    environment:
+      - DEPLOYMENT_MODE=default
+      - KAFKA_CONNECT_URIS=http://debezium-connector:8083
+
+networks:
+  cdc_network:
+    name: cdc_docker_network
