@@ -15,7 +15,7 @@ spring:
 
 config:
   kafka:
-    schema-registry-url: http://localhost:8083
+    schema-registry-url: http://localhost:8081
     specific-avro-reader: true
     bootstrap-servers: localhost:9092
     consumer:
@@ -36,3 +36,8 @@ config:
       compression-type: gzip
       properties:
         security.protocol: PLAINTEXT
+
+logging:
+  level:
+    org.springframework.kafka: DEBUG
+    com.example.springcdcdebeziumdemo.kafka: DEBUG

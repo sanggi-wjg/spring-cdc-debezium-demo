@@ -16,10 +16,28 @@ import org.springframework.kafka.core.*
 class KafkaConfiguration(
     private val property: KafkaProperty,
 ) {
+    companion object {
+        const val CDC_LISTENER_CONTAINER_FACTORY = "cdcListenerContainerFactory"
+        const val LISTENER_CONTAINER_FACTORY = "listenerContainerFactory"
+    }
+
     @Bean
     fun consumerFactory(): ConsumerFactory<String, Any> {
         return DefaultKafkaConsumerFactory(
-            property.consumer.properties + mapOf(
+            mapOf(
+                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to property.bootstrapServers,
+                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to property.consumer.keyDeserializer,
+                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to "org.apache.kafka.common.serialization.StringDeserializer",
+                ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to property.consumer.autoOffsetReset,
+                ConsumerConfig.GROUP_ID_CONFIG to KafkaGroup.SPRING_DEMO,
+            ),
+        )
+    }
+
+    @Bean
+    fun cdcConsumerFactory(): ConsumerFactory<String, Any> {
+        return DefaultKafkaConsumerFactory(
+            mapOf(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to property.bootstrapServers,
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to property.consumer.keyDeserializer,
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to property.consumer.valueDeserializer,
@@ -30,6 +48,7 @@ class KafkaConfiguration(
             ),
         )
     }
+
 
     @Bean
     fun producerFactory(): ProducerFactory<String, Any> {
@@ -45,10 +64,18 @@ class KafkaConfiguration(
         )
     }
 
-    @Bean
+    @Bean(LISTENER_CONTAINER_FACTORY)
     fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Any> {
         val factory: ConcurrentKafkaListenerContainerFactory<String, Any> = ConcurrentKafkaListenerContainerFactory()
         factory.consumerFactory = consumerFactory()
+        factory.setConcurrency(property.consumer.concurrency)
+        return factory
+    }
+
+    @Bean(CDC_LISTENER_CONTAINER_FACTORY)
+    fun kafkaCdcListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Any> {
+        val factory: ConcurrentKafkaListenerContainerFactory<String, Any> = ConcurrentKafkaListenerContainerFactory()
+        factory.consumerFactory = cdcConsumerFactory()
         factory.setConcurrency(property.consumer.concurrency)
         return factory
     }
