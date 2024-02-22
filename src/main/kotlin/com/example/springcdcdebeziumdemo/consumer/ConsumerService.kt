@@ -24,7 +24,7 @@ class BasicConsumerService(
 
     @KafkaListener(
         topics = [KafkaTopic.TEST],
-        groupId = KafkaGroup.SPRING_DEMO,
+        groupId = KafkaGroup.SPRING_TEST,
         containerFactory = KafkaConfiguration.LISTENER_CONTAINER_FACTORY,
     )
     override fun test(@Payload message: String) {
@@ -33,7 +33,7 @@ class BasicConsumerService(
 
     @KafkaListener(
         topics = [KafkaTopic.DEMO_USER],
-        groupId = KafkaGroup.SPRING_DEMO,
+        groupId = KafkaGroup.SPRING_CDC,
         containerFactory = KafkaConfiguration.CDC_LISTENER_CONTAINER_FACTORY,
     )
     override fun changedDataCapture(@Payload message: String) {

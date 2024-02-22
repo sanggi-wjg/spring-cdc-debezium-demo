@@ -41,3 +41,6 @@ logging:
   level:
     org.springframework.kafka: DEBUG
     com.example.springcdcdebeziumdemo.kafka: DEBUG
+
+server:
+  port: 8089

@@ -3,6 +3,7 @@ package com.example.springcdcdebeziumdemo.kafka
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -13,6 +14,7 @@ import org.springframework.kafka.core.*
 @EnableKafka
 @Configuration
 @EnableConfigurationProperties(KafkaProperty::class)
+@ConditionalOnClass(KafkaTemplate::class)
 class KafkaConfiguration(
     private val property: KafkaProperty,
 ) {
@@ -29,7 +31,7 @@ class KafkaConfiguration(
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to property.consumer.keyDeserializer,
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to "org.apache.kafka.common.serialization.StringDeserializer",
                 ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to property.consumer.autoOffsetReset,
-                ConsumerConfig.GROUP_ID_CONFIG to KafkaGroup.SPRING_DEMO,
+                ConsumerConfig.GROUP_ID_CONFIG to KafkaGroup.SPRING_TEST,
             ),
         )
     }
@@ -42,7 +44,7 @@ class KafkaConfiguration(
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to property.consumer.keyDeserializer,
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to property.consumer.valueDeserializer,
                 ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to property.consumer.autoOffsetReset,
-                ConsumerConfig.GROUP_ID_CONFIG to KafkaGroup.SPRING_DEMO,
+                ConsumerConfig.GROUP_ID_CONFIG to KafkaGroup.SPRING_CDC,
                 KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG to property.schemaRegistryUrl,
                 KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG to property.specificAvroReader,
             ),
