@@ -26,7 +26,7 @@ class KafkaConfiguration(
     @Bean
     fun consumerFactory(): ConsumerFactory<String, Any> {
         return DefaultKafkaConsumerFactory(
-            property.producer.properties + mapOf(
+            property.consumer.properties + mapOf(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to property.bootstrapServers,
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to property.consumer.keyDeserializer,
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to "org.apache.kafka.common.serialization.StringDeserializer",
@@ -39,7 +39,7 @@ class KafkaConfiguration(
     @Bean
     fun cdcConsumerFactory(): ConsumerFactory<String, Any> {
         return DefaultKafkaConsumerFactory(
-            property.producer.properties + mapOf(
+            property.consumer.properties + mapOf(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to property.bootstrapServers,
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to property.consumer.keyDeserializer,
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to property.consumer.valueDeserializer,
