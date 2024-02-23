@@ -1,4 +1,5 @@
 version: "3.8"
+name: cdc-docker-work-space
 services:
   cdc-demo-mysql-master:
     image: mysql:8.0
@@ -73,18 +74,30 @@ services:
     depends_on:
       - cdc-zookeeper
     ports:
-      - "29092:29092"
+      - "9092:9092"
     environment:
       ZOOKEEPER_CONNECT: cdc-zookeeper:2181
       KAFKA_BROKER_ID: 1
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
-      KAFKA_LISTENERS: INTERNAL://cdc-kafka:9092,EXTERNAL://localhost:29092
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://cdc-kafka:9092,EXTERNAL://localhost:29092
+      KAFKA_LISTENERS: INTERNAL://cdc-kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://cdc-kafka:29092,EXTERNAL://localhost:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
-#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://cdc-kafka:9092,PLAINTEXT_HOST://localhost:29092
-#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-#      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  cdc-kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: cdc-kafka-ui
+    networks:
+      - cdc_network
+    depends_on:
+      - cdc-zookeeper
+      - cdc-kafka
+    ports:
+      - "8084:8080"
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=Local-Cluster
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=cdc-kafka:29092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=cdc-zookeeper:2181
 
   schema-registry:
     image: confluentinc/cp-schema-registry
@@ -103,22 +116,6 @@ services:
       - SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS=cdc-kafka:29092
       - SCHEMA_REGISTRY_LISTENERS=http://schema-registry:8081
       - SCHEMA_REGISTRY_DEBUG=true
-
-  cdc-kafka-ui:
-    image: provectuslabs/kafka-ui
-    container_name: cdc-kafka-ui
-    networks:
-      - cdc_network
-    depends_on:
-      - cdc-zookeeper
-      - cdc-kafka
-      - schema-registry
-    ports:
-      - "8084:8080"
-    environment:
-      - KAFKA_CLUSTERS_0_NAME=Local-Cluster
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=cdc-kafka:29092
-      - KAFKA_CLUSTERS_0_ZOOKEEPER=cdc-zookeeper:2181
 
   debezium-connector:
     image: debezium/connect:2.5.1.Final # https://hub.docker.com/r/debezium/connect
