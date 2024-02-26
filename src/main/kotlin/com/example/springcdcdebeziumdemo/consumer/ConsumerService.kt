@@ -5,13 +5,19 @@ import com.example.springcdcdebeziumdemo.kafka.KafkaGroup
 import com.example.springcdcdebeziumdemo.kafka.KafkaTopic
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
+import org.springframework.kafka.support.Acknowledgment
+import org.springframework.kafka.support.KafkaHeaders
+import org.springframework.messaging.handler.annotation.Header
 import org.springframework.messaging.handler.annotation.Payload
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import schema.data.User
 
 interface ConsumerService {
     fun test(message: String)
-    fun changedDataCapture(message: String)
+    fun changedDataCapture(
+        @Payload message: List<User?>,
+    )
 }
 
 @Transactional
@@ -36,7 +42,9 @@ class BasicConsumerService(
         groupId = KafkaGroup.SPRING_CDC,
         containerFactory = KafkaConfiguration.CDC_LISTENER_CONTAINER_FACTORY,
     )
-    override fun changedDataCapture(@Payload message: String) {
-        log.info(message)
+    override fun changedDataCapture(
+        @Payload message: List<User?>,
+    ) {
+        log.info("Consume message: $message")
     }
 }

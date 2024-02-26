@@ -1,8 +1,8 @@
 [
   {
     "type": "record",
-    "namespace": "schema.data",
     "name": "User",
+    "namespace": "schema.data",
     "doc": "유저",
     "fields": [
       {"name": "email", "type": ["string"], "doc": "이메일"},
