@@ -32,7 +32,7 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
     "database.server.id": "2",
     "topic.prefix": "cdc-demo",
     "database.include.list": "demo",
-    "schema.history.internal.kafka.bootstrap.servers": "cdc-kafka:9092",
+    "schema.history.internal.kafka.bootstrap.servers": "cdc-kafka:29092",
     "schema.history.internal.kafka.topic": "schema-changes.demo",
     "include.schema.changes": "true",
     "table.whitelist": "demo.user"
@@ -61,7 +61,7 @@ Server: Jetty(9.4.52.v20230823)
     "database.server.id": "2",
     "topic.prefix": "cdc-demo",
     "database.include.list": "demo",
-    "schema.history.internal.kafka.bootstrap.servers": "cdc-kafka:9092",
+    "schema.history.internal.kafka.bootstrap.servers": "cdc-kafka:29092",
     "schema.history.internal.kafka.topic": "schema-changes.demo",
     "include.schema.changes": "true",
     "table.whitelist": "demo.user",

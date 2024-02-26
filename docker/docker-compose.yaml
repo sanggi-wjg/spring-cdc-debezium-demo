@@ -171,3 +171,4 @@ services:
 networks:
   cdc_network:
     name: cdc_docker_network
+    driver: bridge
