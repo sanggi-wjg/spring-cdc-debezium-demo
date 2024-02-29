@@ -24,7 +24,7 @@ class KafkaConfiguration(
     }
 
     @Bean
-    fun consumerFactory(): ConsumerFactory<String, Any> {
+    fun consumerFactory(): ConsumerFactory<String, String> {
         return DefaultKafkaConsumerFactory(
             property.consumer.properties + mapOf(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to property.bootstrapServers,
@@ -37,7 +37,7 @@ class KafkaConfiguration(
     }
 
     @Bean
-    fun cdcConsumerFactory(): ConsumerFactory<String, Any> {
+    fun cdcConsumerFactory(): ConsumerFactory<String, String> {
         return DefaultKafkaConsumerFactory(
             property.consumer.properties + mapOf(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to property.bootstrapServers,
@@ -53,7 +53,7 @@ class KafkaConfiguration(
 
 
     @Bean
-    fun producerFactory(): ProducerFactory<String, Any> {
+    fun producerFactory(): ProducerFactory<String, String> {
         return DefaultKafkaProducerFactory(
             property.producer.properties + mapOf(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to property.bootstrapServers,
@@ -67,23 +67,23 @@ class KafkaConfiguration(
     }
 
     @Bean(LISTENER_CONTAINER_FACTORY)
-    fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Any> {
-        val factory: ConcurrentKafkaListenerContainerFactory<String, Any> = ConcurrentKafkaListenerContainerFactory()
+    fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, String> {
+        val factory: ConcurrentKafkaListenerContainerFactory<String, String> = ConcurrentKafkaListenerContainerFactory()
         factory.consumerFactory = consumerFactory()
         factory.setConcurrency(property.consumer.concurrency)
         return factory
     }
 
     @Bean(CDC_LISTENER_CONTAINER_FACTORY)
-    fun kafkaCdcListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, Any> {
-        val factory: ConcurrentKafkaListenerContainerFactory<String, Any> = ConcurrentKafkaListenerContainerFactory()
+    fun kafkaCdcListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, String> {
+        val factory: ConcurrentKafkaListenerContainerFactory<String, String> = ConcurrentKafkaListenerContainerFactory()
         factory.consumerFactory = cdcConsumerFactory()
         factory.setConcurrency(property.consumer.concurrency)
         return factory
     }
 
     @Bean
-    fun kafkaTemplate(): KafkaTemplate<String, Any> {
+    fun kafkaTemplate(): KafkaTemplate<String, String> {
         return KafkaTemplate(producerFactory())
     }
 }

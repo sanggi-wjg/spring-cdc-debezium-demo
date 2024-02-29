@@ -47,9 +47,9 @@ dependencies {
 }
 
 avro {
-    setCreateSetters(false)
+//    setCreateSetters(false)
     outputCharacterEncoding.set("UTF-8")
-    fieldVisibility.set("PRIVATE")
+//    fieldVisibility.set("PRIVATE")
 }
 
 configurations {

@@ -3,6 +3,9 @@ package com.example.springcdcdebeziumdemo.consumer
 import com.example.springcdcdebeziumdemo.kafka.KafkaConfiguration
 import com.example.springcdcdebeziumdemo.kafka.KafkaGroup
 import com.example.springcdcdebeziumdemo.kafka.KafkaTopic
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.messaging.handler.annotation.Payload
@@ -13,14 +16,15 @@ import schema.data.User
 interface ConsumerService {
     fun test(message: String)
     fun changedDataCapture(
-        @Payload message: List<User?>,
+//        @Payload message: ConsumerRecord<String, String>,
+        @Payload message: ConsumerRecord<String, User>,
     )
 }
 
 @Transactional
 @Service
 class BasicConsumerService(
-//    private val objectMapper: ObjectMapper,
+    private val objectMapper: ObjectMapper,
 ) : ConsumerService {
 
     private val log = LoggerFactory.getLogger(BasicConsumerService::class.java)
@@ -40,8 +44,27 @@ class BasicConsumerService(
         containerFactory = KafkaConfiguration.CDC_LISTENER_CONTAINER_FACTORY,
     )
     override fun changedDataCapture(
-        @Payload message: List<User?>,
+//        @Payload message: ConsumerRecord<String, String>,
+        @Payload message: ConsumerRecord<String, User>,
     ) {
         log.info("Consume message: $message")
+
+//        val value = objectMapper.readValue(message.value(), UserRecord::class.java)
+//        log.info("before: ${value.payload.before}, after: ${value.payload.after}")
     }
+
+    data class UserRecord(
+        val schema: String,
+        val payload: UserRecordPayload,
+    )
+
+    data class UserRecordPayload(
+        val before: User?,
+        val after: User?,
+        val source: String,
+        val op: String,
+        @JsonProperty("ts_ms")
+        val ts_ms: Int,
+        val transaction: String?
+    )
 }

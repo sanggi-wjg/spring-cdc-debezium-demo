@@ -11,7 +11,7 @@ interface ProducerService {
 
 @Service
 class BasicProducerService(
-    private val kafkaProducer: KafkaTemplate<String, Any>
+    private val kafkaProducer: KafkaTemplate<String, String>
 ) : ProducerService {
 
     private val log = LoggerFactory.getLogger(this::class.java)

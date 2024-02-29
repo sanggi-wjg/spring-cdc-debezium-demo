@@ -40,6 +40,10 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
 }'
 ```
 
+##### MySQL Connector configuration properties
+
+https://debezium.io/documentation/reference/stable/connectors/mysql.html#_required_debezium_mysql_connector_configuration_properties
+
 ```shell
 # Response
 HTTP/1.1 201 Created
@@ -102,8 +106,10 @@ CREATE TABLE user
     user_status VARCHAR(32)  NOT NULL DEFAULT 'ACTIVE'
 );
 
+use demo;
+
 INSERT INTO user (email, password, nickname, user_status)
-VALUES ('user@dev.com', 'hashed_password', 'user-4', 'ACTIVE');
+VALUES ('user@dev.com', 'hashed_password', 'user-3', 'ACTIVE');
 ```
 
 ```
