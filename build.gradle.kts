@@ -39,8 +39,8 @@ dependencies {
     implementation("org.apache.avro:avro:1.11.3")
     implementation("io.confluent:kafka-avro-serializer:7.4.2")
     implementation("io.confluent:kafka-schema-registry:7.4.2")
-    implementation("io.confluent:kafka-schema-registry-client:5.3.2")
-    implementation("io.confluent:kafka-streams-avro-serde:7.5.3")
+//    implementation("io.confluent:kafka-schema-registry-client:5.3.2")
+//    implementation("io.confluent:kafka-streams-avro-serde:7.5.3")
 
     runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

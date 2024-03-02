@@ -14,10 +14,8 @@ import schema.data.User
 
 interface ConsumerService {
     fun test(message: String)
-    fun changedDataCapture(
-//        @Payload message: ConsumerRecord<String, String>,
-        @Payload message: ConsumerRecord<String, User>,
-    )
+    fun testUser(@Payload message: ConsumerRecord<String, User>)
+    fun changedDataCapture(@Payload message: ConsumerRecord<String, User>)
 }
 
 @Transactional
@@ -38,14 +36,24 @@ class BasicConsumerService(
     }
 
     @KafkaListener(
+        topics = [KafkaTopic.TEST_USER],
+        groupId = KafkaGroup.SPRING_CDC,
+        containerFactory = KafkaConfiguration.CDC_LISTENER_CONTAINER_FACTORY,
+    )
+    override fun testUser(@Payload message: ConsumerRecord<String, User>) {
+        log.info("testUser")
+        log.info(message.key())
+        log.info(message.value().toString())
+    }
+
+    @KafkaListener(
         topics = [KafkaTopic.DEMO_USER],
         groupId = KafkaGroup.SPRING_CDC,
         containerFactory = KafkaConfiguration.CDC_LISTENER_CONTAINER_FACTORY,
     )
-    override fun changedDataCapture(
-//        @Payload message: ConsumerRecord<String, String>,
-        @Payload message: ConsumerRecord<String, User>,
-    ) {
-        log.info("Consume message: $message")
+    override fun changedDataCapture(@Payload message: ConsumerRecord<String, User>) {
+        log.info("changedDataCapture")
+        log.info(message.key())
+        log.info(message.value().toString())
     }
 }
