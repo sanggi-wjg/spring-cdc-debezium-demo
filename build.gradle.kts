@@ -34,10 +34,14 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+    // avro + kafka schema registry
     implementation("org.apache.avro:avro:1.11.3")
-//    implementation("org.apache.avro:avro-tools:1.10.2")
     implementation("io.confluent:kafka-avro-serializer:7.4.2")
     implementation("io.confluent:kafka-schema-registry:7.4.2")
+    implementation("io.confluent:kafka-schema-registry-client:5.3.2")
+    implementation("io.confluent:kafka-streams-avro-serde:7.5.3")
+
     runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.kafka:spring-kafka-test")
@@ -52,8 +56,28 @@ avro {
     // https://github.com/davidmc24/gradle-avro-plugin
     setOutputCharacterEncoding("UTF-8")
     setCreateSetters(false)
-    setFieldVisibility("PUBLIC") // PRIVATE
+    setFieldVisibility("PRIVATE")
 }
+
+//tasks {
+//    val schemaRegistry = "http://localhost:8081"
+//    val downloadInputs = listOf(
+//        "schema.data-key",
+//        "schema.data-value"
+//    )
+//    val avroDestination = "org/main/avro"
+//    schemaRegistry {
+//        url.set(schemaRegistry)
+//        download {
+//            downloadInputs.forEach {
+//                subjectPattern(
+//                    inputPattern = it,
+//                    file = avroDestination
+//                )
+//            }
+//        }
+//    }
+//}
 
 configurations {
     all {

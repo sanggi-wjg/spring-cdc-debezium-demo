@@ -1,4 +1,4 @@
-package com.example.springcdcdebeziumdemo.consumer
+package com.example.springcdcdebeziumdemo.producer
 
 import com.example.springcdcdebeziumdemo.kafka.KafkaTopic
 import org.slf4j.LoggerFactory

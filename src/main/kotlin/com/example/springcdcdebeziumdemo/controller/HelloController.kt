@@ -1,6 +1,6 @@
 package com.example.springcdcdebeziumdemo.controller
 
-import com.example.springcdcdebeziumdemo.consumer.ProducerService
+import com.example.springcdcdebeziumdemo.producer.ProducerService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
@@ -11,7 +11,7 @@ class HelloController(
 ) {
 
     @GetMapping("/")
-    fun index(): ResponseEntity<String> {
+    fun test(): ResponseEntity<String> {
         producerService.publishTestMessage()
         return ResponseEntity.ok("Success")
     }
