@@ -1,6 +1,7 @@
 package com.example.springcdcdebeziumdemo.kafka
 
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
+import io.confluent.kafka.serializers.KafkaAvroSerializerConfig
 import org.apache.avro.generic.GenericRecord
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
@@ -50,6 +51,8 @@ class KafkaConfiguration(
                 ConsumerConfig.GROUP_ID_CONFIG to KafkaGroup.SPRING_CDC,
                 KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG to property.schemaRegistryUrl,
                 KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG to property.specificAvroReader,
+                KafkaAvroDeserializerConfig.AVRO_REFLECTION_ALLOW_NULL_CONFIG to true,
+                KafkaAvroDeserializerConfig.AVRO_USE_LOGICAL_TYPE_CONVERTERS_CONFIG to true,
             ),
         )
     }
@@ -78,8 +81,7 @@ class KafkaConfiguration(
                 ProducerConfig.ACKS_CONFIG to property.producer.acks,
                 ProducerConfig.RETRIES_CONFIG to property.producer.retries,
                 ProducerConfig.COMPRESSION_TYPE_CONFIG to property.producer.compressionType,
-                KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG to property.schemaRegistryUrl,
-                KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG to property.specificAvroReader,
+                KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG to property.schemaRegistryUrl,
             ),
         )
     }

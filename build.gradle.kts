@@ -1,9 +1,11 @@
+import com.github.imflog.schema.registry.Subject
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("org.springframework.boot") version "3.2.2"
     id("io.spring.dependency-management") version "1.1.4"
     id("com.github.davidmc24.gradle.plugin.avro") version "1.9.1"
+    id("com.github.imflog.kafka-schema-registry-gradle-plugin") version "1.13.0"
     kotlin("jvm") version "1.9.22"
     kotlin("plugin.spring") version "1.9.22"
     kotlin("plugin.jpa") version "1.9.22"
@@ -39,8 +41,6 @@ dependencies {
     implementation("org.apache.avro:avro:1.11.3")
     implementation("io.confluent:kafka-avro-serializer:7.4.2")
     implementation("io.confluent:kafka-schema-registry:7.4.2")
-//    implementation("io.confluent:kafka-schema-registry-client:5.3.2")
-//    implementation("io.confluent:kafka-streams-avro-serde:7.5.3")
 
     runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -59,25 +59,20 @@ avro {
     setFieldVisibility("PRIVATE")
 }
 
-//tasks {
-//    val schemaRegistry = "http://localhost:8081"
-//    val downloadInputs = listOf(
-//        "schema.data-key",
-//        "schema.data-value"
-//    )
-//    val avroDestination = "org/main/avro"
-//    schemaRegistry {
-//        url.set(schemaRegistry)
-//        download {
-//            downloadInputs.forEach {
-//                subjectPattern(
-//                    inputPattern = it,
-//                    file = avroDestination
-//                )
-//            }
-//        }
-//    }
-//}
+schemaRegistry {
+    // https://github.com/ImFlog/schema-registry-plugin
+    url.set("http://localhost:8081")
+    pretty = true
+    val subject = Subject("UserSubject", "/src/main/avro/schema.avsc", "AVRO")
+        .addLocalReference("localUserSubject", "/src/main/avro/schema.avsc")
+
+    register {
+        subject(subject)
+    }
+    compatibility {
+        subject(subject)
+    }
+}
 
 configurations {
     all {

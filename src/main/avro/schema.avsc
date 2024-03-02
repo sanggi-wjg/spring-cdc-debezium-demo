@@ -1,15 +1,13 @@
-[
-  {
-    "type": "record",
-    "name": "User",
-    "namespace": "schema.data",
-    "doc": "유저",
-    "fields": [
-      {"name": "id", "type": ["int"], "doc": "pk"},
-      {"name": "email", "type": ["string"], "doc": "이메일"},
-      {"name": "password", "type": ["string"], "doc": "암호"},
-      {"name": "nickname", "type": ["null", "string"], "default": null, "doc": "별명"},
-      {"name": "user_status", "type": ["string"], "default": "ACTIVE", ",doc": "상태"}
-    ]
-  }
-]
+{
+  "namespace": "avro.schema",
+  "type": "record",
+  "name": "User",
+  "doc": "유저",
+  "fields": [
+    {"name": "id", "type": "int", "doc": "pk"},
+    {"name": "email", "type": "string", "doc": "이메일"},
+    {"name": "password", "type": "string", "doc": "암호"},
+    {"name": "nickname", "type": ["null", "string"], "default": null, "doc": "별명"},
+    {"name": "user_status", "type": "string", "default": "ACTIVE", ",doc": "상태"}
+  ]
+}
