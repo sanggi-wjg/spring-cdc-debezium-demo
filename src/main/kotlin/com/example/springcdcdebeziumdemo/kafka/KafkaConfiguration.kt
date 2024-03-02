@@ -26,7 +26,7 @@ class KafkaConfiguration(
     @Bean
     fun consumerFactory(): ConsumerFactory<String, String> {
         return DefaultKafkaConsumerFactory(
-            property.consumer.properties + mapOf(
+            mapOf(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to property.bootstrapServers,
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to property.consumer.keyDeserializer,
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to "org.apache.kafka.common.serialization.StringDeserializer",
@@ -39,7 +39,7 @@ class KafkaConfiguration(
     @Bean
     fun cdcConsumerFactory(): ConsumerFactory<String, String> {
         return DefaultKafkaConsumerFactory(
-            property.consumer.properties + mapOf(
+            mapOf(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to property.bootstrapServers,
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to property.consumer.keyDeserializer,
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to property.consumer.valueDeserializer,
@@ -55,13 +55,15 @@ class KafkaConfiguration(
     @Bean
     fun producerFactory(): ProducerFactory<String, String> {
         return DefaultKafkaProducerFactory(
-            property.producer.properties + mapOf(
+            mapOf(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to property.bootstrapServers,
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG to property.producer.keySerializer,
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG to property.producer.valueSerializer,
                 ProducerConfig.ACKS_CONFIG to property.producer.acks,
                 ProducerConfig.RETRIES_CONFIG to property.producer.retries,
                 ProducerConfig.COMPRESSION_TYPE_CONFIG to property.producer.compressionType,
+                KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG to property.schemaRegistryUrl,
+                KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG to property.specificAvroReader,
             ),
         )
     }

@@ -30,7 +30,8 @@ config:
 
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+#      value-serializer: org.apache.kafka.common.serialization.StringSerializer
       acks: all
       retries: 3
       compression-type: gzip

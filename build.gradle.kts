@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "3.2.2"
     id("io.spring.dependency-management") version "1.1.4"
-    id("com.github.davidmc24.gradle.plugin.avro") version "1.8.0"
+    id("com.github.davidmc24.gradle.plugin.avro") version "1.9.1"
     kotlin("jvm") version "1.9.22"
     kotlin("plugin.spring") version "1.9.22"
     kotlin("plugin.jpa") version "1.9.22"
@@ -19,6 +19,7 @@ java {
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
     maven {
         url = uri("https://packages.confluent.io/maven/")
         name = "confluent"
@@ -33,7 +34,8 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("org.apache.avro:avro:1.10.2")
+    implementation("org.apache.avro:avro:1.11.3")
+//    implementation("org.apache.avro:avro-tools:1.10.2")
     implementation("io.confluent:kafka-avro-serializer:7.4.2")
     implementation("io.confluent:kafka-schema-registry:7.4.2")
     runtimeOnly("com.mysql:mysql-connector-j")
@@ -47,9 +49,10 @@ dependencies {
 }
 
 avro {
-//    setCreateSetters(false)
-    outputCharacterEncoding.set("UTF-8")
-//    fieldVisibility.set("PRIVATE")
+    // https://github.com/davidmc24/gradle-avro-plugin
+    setOutputCharacterEncoding("UTF-8")
+    setCreateSetters(false)
+    setFieldVisibility("PUBLIC") // PRIVATE
 }
 
 configurations {
