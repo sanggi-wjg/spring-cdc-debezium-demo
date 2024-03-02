@@ -63,14 +63,14 @@ schemaRegistry {
     // https://github.com/ImFlog/schema-registry-plugin
     url.set("http://localhost:8081")
     pretty = true
-    val subject = Subject("UserSubject", "/src/main/avro/schema.avsc", "AVRO")
-        .addLocalReference("localUserSubject", "/src/main/avro/schema.avsc")
+    val userSubject = Subject("UserE", "src/main/avro/schema.avsc", "AVRO")
+        .addLocalReference("UserE", "src/main/avro/schema.avsc")
 
     register {
-        subject(subject)
+        subject(userSubject)
     }
     compatibility {
-        subject(subject)
+        subject(userSubject)
     }
 }
 

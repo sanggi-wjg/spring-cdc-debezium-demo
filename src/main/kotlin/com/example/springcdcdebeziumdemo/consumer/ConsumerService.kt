@@ -1,6 +1,6 @@
 package com.example.springcdcdebeziumdemo.consumer
 
-import avro.schema.User
+import avro.schema.Event
 import com.example.springcdcdebeziumdemo.kafka.KafkaConfiguration
 import com.example.springcdcdebeziumdemo.kafka.KafkaGroup
 import com.example.springcdcdebeziumdemo.kafka.KafkaTopic
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 
 interface ConsumerService {
     fun test(message: String)
-    fun testUser(@Payload message: ConsumerRecord<String, User>)
+    fun testUser(@Payload message: ConsumerRecord<String, Event>)
 //    fun changedDataCapture(@Payload message: ConsumerRecord<String, User>)
 }
 
@@ -40,7 +40,7 @@ class BasicConsumerService(
         groupId = KafkaGroup.SPRING_CDC,
         containerFactory = KafkaConfiguration.CDC_LISTENER_CONTAINER_FACTORY,
     )
-    override fun testUser(@Payload message: ConsumerRecord<String, User>) {
+    override fun testUser(@Payload message: ConsumerRecord<String, Event>) {
         log.info("testUser")
         log.info(message.key())
         log.info(message.value().toString())

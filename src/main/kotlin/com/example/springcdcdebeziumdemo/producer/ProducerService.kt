@@ -1,6 +1,6 @@
 package com.example.springcdcdebeziumdemo.producer
 
-import avro.schema.User
+import avro.schema.Event
 import com.example.springcdcdebeziumdemo.kafka.KafkaConfiguration
 import com.example.springcdcdebeziumdemo.kafka.KafkaTopic
 import org.apache.avro.generic.GenericRecord
@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
+import java.sql.Timestamp
+import java.time.Instant
+import kotlin.random.Random
 
 interface ProducerService {
     fun publishTest()
@@ -33,7 +36,7 @@ class BasicProducerService(
         log.info("Publishing user message")
         cdcKafkaProducer.send(
             KafkaTopic.TEST_USER,
-            User(1, "test-email", "test-hashed-password", "test-nickname", "ACTIVE"),
+            Event(Random.nextInt(100), "Random event created", Timestamp.from(Instant.now()).time.toInt()),
         )
     }
 }
