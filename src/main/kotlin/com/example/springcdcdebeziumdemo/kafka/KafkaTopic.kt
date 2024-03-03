@@ -3,5 +3,5 @@ package com.example.springcdcdebeziumdemo.kafka
 object KafkaTopic {
     const val DEMO_USER = "cdc-demo.demo.user"
     const val TEST = "test-topic"
-    const val TEST_USER = "test-user"
+    const val TEST_EVENT = "test-event"
 }

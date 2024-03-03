@@ -63,14 +63,20 @@ schemaRegistry {
     // https://github.com/ImFlog/schema-registry-plugin
     url.set("http://localhost:8081")
     pretty = true
-    val userSubject = Subject("UserE", "src/main/avro/schema.avsc", "AVRO")
-        .addLocalReference("UserE", "src/main/avro/schema.avsc")
+
+//    download {
+////        subjectPattern("avro.*", "src/main/avro")
+//        subject("cdc-demo.demo.user", "src/main/avro/avro-schema.avsc")
+//    }
+
+    val localSubject = Subject("localSubject", "src/main/avro/schema.avsc", "AVRO")
+//    .addLocalReference("localAvroSubject", "src/main/avro/schema.avsc")
 
     register {
-        subject(userSubject)
+        subject(localSubject)
     }
     compatibility {
-        subject(userSubject)
+        subject(localSubject)
     }
 }
 
@@ -87,6 +93,9 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs += "-Xjsr305=strict"
         jvmTarget = "17"
     }
+
+    dependsOn("registerSchemasTask")
+    dependsOn("downloadSchemasTask")
 }
 
 tasks.withType<Test> {

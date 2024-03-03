@@ -1,6 +1,7 @@
 package com.example.springcdcdebeziumdemo.consumer
 
 import avro.schema.Event
+import avro.schema.User
 import com.example.springcdcdebeziumdemo.kafka.KafkaConfiguration
 import com.example.springcdcdebeziumdemo.kafka.KafkaGroup
 import com.example.springcdcdebeziumdemo.kafka.KafkaTopic
@@ -15,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 interface ConsumerService {
     fun test(message: String)
     fun testUser(@Payload message: ConsumerRecord<String, Event>)
-//    fun changedDataCapture(@Payload message: ConsumerRecord<String, User>)
+    fun changedDataCapture(@Payload message: ConsumerRecord<String, User>)
 }
 
 @Transactional
@@ -36,7 +37,7 @@ class BasicConsumerService(
     }
 
     @KafkaListener(
-        topics = [KafkaTopic.TEST_USER],
+        topics = [KafkaTopic.TEST_EVENT],
         groupId = KafkaGroup.SPRING_CDC,
         containerFactory = KafkaConfiguration.CDC_LISTENER_CONTAINER_FACTORY,
     )
@@ -46,14 +47,14 @@ class BasicConsumerService(
         log.info(message.value().toString())
     }
 
-//    @KafkaListener(
-//        topics = [KafkaTopic.DEMO_USER],
-//        groupId = KafkaGroup.SPRING_CDC,
-//        containerFactory = KafkaConfiguration.CDC_LISTENER_CONTAINER_FACTORY,
-//    )
-//    override fun changedDataCapture(@Payload message: ConsumerRecord<String, User>) {
-//        log.info("changedDataCapture")
-//        log.info(message.key())
-//        log.info(message.value().toString())
-//    }
+    @KafkaListener(
+        topics = [KafkaTopic.DEMO_USER],
+        groupId = KafkaGroup.SPRING_CDC,
+        containerFactory = KafkaConfiguration.CDC_LISTENER_CONTAINER_FACTORY,
+    )
+    override fun changedDataCapture(@Payload message: ConsumerRecord<String, User>) {
+        log.info("changedDataCapture")
+        log.info(message.key())
+        log.info(message.value().toString())
+    }
 }

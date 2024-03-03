@@ -16,9 +16,9 @@ class EventController(
         return ResponseEntity.ok("Success")
     }
 
-    @GetMapping("/test-user")
-    fun publishTestUser(): ResponseEntity<String> {
-        producerService.publishUser()
+    @GetMapping("/test-event")
+    fun publishTestEvent(): ResponseEntity<String> {
+        producerService.publishTestEvent()
         return ResponseEntity.ok("Success")
     }
 }

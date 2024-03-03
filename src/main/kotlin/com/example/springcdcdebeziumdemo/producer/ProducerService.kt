@@ -14,7 +14,7 @@ import kotlin.random.Random
 
 interface ProducerService {
     fun publishTest()
-    fun publishUser()
+    fun publishTestEvent()
 }
 
 @Service
@@ -32,10 +32,10 @@ class BasicProducerService(
         kafkaProducer.send(KafkaTopic.TEST, "test")
     }
 
-    override fun publishUser() {
+    override fun publishTestEvent() {
         log.info("Publishing user message")
         cdcKafkaProducer.send(
-            KafkaTopic.TEST_USER,
+            KafkaTopic.TEST_EVENT,
             Event(Random.nextInt(100), "Random event created", Timestamp.from(Instant.now()).time.toInt()),
         )
     }

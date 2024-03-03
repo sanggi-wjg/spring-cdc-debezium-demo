@@ -120,7 +120,7 @@ services:
       SCHEMA_REGISTRY_DEBUG: true
 
   debezium-connector:
-    image: debezium/connect:2.5.1.Final # https://hub.docker.com/r/debezium/connect
+    image: debezium/connect:2.5.2.Final # https://hub.docker.com/r/debezium/connect
     platform: linux/arm64/v8
     container_name: debezium-connector
     networks:
@@ -142,14 +142,13 @@ services:
       - STATUS_STORAGE_REPLICATION_FACTOR=1
       - ENABLE_DEBEZIUM_KC_REST_EXTENSION=true
       - ENABLE_DEBEZIUM_SCRIPTING=true
-#      - CONNECT_REST_EXTENSION_CLASSES=io.debezium.kcrestextension.DebeziumConnectRestExtension
       - LOG_LEVEL=INFO
       - KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
       - VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
 #      - KEY_CONVERTER=io.confluent.connect.avro.AvroConverter
-#      - CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=http://schema-registry:8081
 #      - VALUE_CONVERTER=io.confluent.connect.avro.AvroConverter
-#      - CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL=http://schema-registry:8081
+      - CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=http://schema-registry:8081
+      - CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL=http://schema-registry:8081
       - INTERNAL_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
       - INTERNAL_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
 
