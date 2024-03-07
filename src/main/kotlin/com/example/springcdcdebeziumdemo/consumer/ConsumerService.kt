@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 interface ConsumerService {
     fun test(message: String)
     fun testUser(@Payload message: ConsumerRecord<String, Event>)
-    fun changedDataCapture(@Payload message: ConsumerRecord<String, User>)
+    fun changedDataCapture(@Payload message: ConsumerRecord<String, String>)
 }
 
 @Transactional
@@ -52,7 +52,7 @@ class BasicConsumerService(
         groupId = KafkaGroup.SPRING_CDC,
         containerFactory = KafkaConfiguration.CDC_LISTENER_CONTAINER_FACTORY,
     )
-    override fun changedDataCapture(@Payload message: ConsumerRecord<String, User>) {
+    override fun changedDataCapture(@Payload message: ConsumerRecord<String, String>) {
         log.info("changedDataCapture")
         log.info(message.key())
         log.info(message.value().toString())

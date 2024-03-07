@@ -4,13 +4,14 @@
 mkdir docker/plguins
 cd docker/plguins 
  
+curl https://packages.confluent.io/maven/io/confluent/common-config/7.5.3/common-config-7.5.3.jar --output common-config.jar
+curl https://packages.confluent.io/maven/io/confluent/common-utils/7.5.3/common-utils-7.5.3.jar --output common-utils.jar
+curl https://packages.confluent.io/maven/io/confluent/kafka-avro-serializer/7.5.3/kafka-avro-serializer-7.5.3.jar --output kafka-avro-serializer.jar
 curl https://packages.confluent.io/maven/io/confluent/kafka-connect-avro-converter/7.5.3/kafka-connect-avro-converter-7.5.3.jar --output kafka-connect-avro-converter.jar
 curl https://packages.confluent.io/maven/io/confluent/kafka-connect-avro-data/7.5.3/kafka-connect-avro-data-7.5.3.jar --output kafka-connect-avro-data.jar
-curl https://packages.confluent.io/maven/io/confluent/common-utils/7.5.3/common-utils-7.5.3.jar --output common-utils.jar
-curl https://packages.confluent.io/maven/io/confluent/common-config/7.5.3/common-config-7.5.3.jar --output common-config.jar
+curl https://packages.confluent.io/maven/io/confluent/kafka-schema-converter/7.5.3/kafka-schema-converter-7.5.3.jar --output kafka-schema-converter.jar
 curl https://packages.confluent.io/maven/io/confluent/kafka-schema-registry-client/7.5.3/kafka-schema-registry-client-7.5.3.jar --output kafka-schema-registry-client.jar
 curl https://packages.confluent.io/maven/io/confluent/kafka-schema-serializer/7.5.3/kafka-schema-serializer-7.5.3.jar --output kafka-schema-serializer.jar
-curl https://packages.confluent.io/maven/io/confluent/kafka-avro-serializer/7.5.3/kafka-avro-serializer-7.5.3.jar --output kafka-avro-serializer.jar
 ```
 
 ## Procedure
