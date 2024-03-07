@@ -83,8 +83,6 @@ services:
       KAFKA_LISTENERS: INTERNAL://:29092,EXTERNAL://:9092
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://cdc-kafka:29092,EXTERNAL://localhost:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
-#      KAFKA_JMX_PORT: 19092
-#      KAFKA_JMX_HOSTNAME: ${DOCKER_HOST_IP:-127.0.0.1}
 
   cdc-kafka-ui:
     image: provectuslabs/kafka-ui
@@ -119,10 +117,11 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'PLAINTEXT://cdc-kafka:29092'
       SCHEMA_REGISTRY_DEBUG: true
 
-  debezium-connector:
+  # https://debezium.io/documentation/reference/stable/configuration/avro.html#deploying-with-debezium-containers
+  connector:
     image: debezium/connect:2.5.1.Final # https://hub.docker.com/r/debezium/connect
     platform: linux/arm64/v8
-    container_name: debezium-connector
+    container_name: connector
     networks:
       - cdc_network
     ports:
@@ -143,14 +142,23 @@ services:
       - ENABLE_DEBEZIUM_KC_REST_EXTENSION=true
       - ENABLE_DEBEZIUM_SCRIPTING=true
       - LOG_LEVEL=INFO
-      - KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
-      - VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
-#      - KEY_CONVERTER=io.confluent.connect.avro.AvroConverter
-#      - VALUE_CONVERTER=io.confluent.connect.avro.AvroConverter
-#      - CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=http://schema-registry:8081
-#      - CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL=http://schema-registry:8081
+#      - KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+#      - VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+      - KEY_CONVERTER=io.confluent.connect.avro.AvroConverter
+      - VALUE_CONVERTER=io.confluent.connect.avro.AvroConverter
+      - CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL=http://schema-registry:8081
+      - CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL=http://schema-registry:8081
       - INTERNAL_KEY_CONVERTER=org.apache.kafka.connect.json.JsonConverter
       - INTERNAL_VALUE_CONVERTER=org.apache.kafka.connect.json.JsonConverter
+      - CONNECT_PLUGIN_PATH=/kafka/connect
+    volumes:
+      - ./plugins/common-config.jar:/kafka/connect/common-config.jar
+      - ./plugins/common-utils.jar:/kafka/connect/common-utils.jar
+      - ./plugins/kafka-avro-serializer.jar:/kafka/connect/kafka-avro-serializer.jar
+      - ./plugins/kafka-connect-avro-data.jar:/kafka/connect/kafka-connect-avro-data.jar
+      - ./plugins/kafka-connect-avro-converter.jar:/kafka/connect/kafka-connect-avro-converter.jar
+      - ./plugins/kafka-schema-registry-client.jar:/kafka/connect/kafka-schema-registry-client.jar
+      - ./plugins/kafka-schema-serializer.jar:/kafka/connect/kafka-schema-serializer.jar
 
   debezium-ui:
     image: debezium/debezium-ui:2.1.2.Final # https://hub.docker.com/r/debezium/debezium-ui
@@ -164,10 +172,10 @@ services:
       - cdc-zookeeper
       - cdc-kafka
       - schema-registry
-      - debezium-connector
+      - connector
     environment:
       - DEPLOYMENT_MODE=default
-      - KAFKA_CONNECT_URIS=http://debezium-connector:8083
+      - KAFKA_CONNECT_URIS=http://connector:8083
 
 networks:
   cdc_network:
