@@ -39,8 +39,8 @@ dependencies {
 
     // avro + kafka schema registry
     implementation("org.apache.avro:avro:1.11.3")
-    implementation("io.confluent:kafka-avro-serializer.jar:7.4.2")
-    implementation("io.confluent:kafka-schema-registry:7.4.2")
+    implementation("io.confluent:kafka-avro-serializer:7.5.3")
+    implementation("io.confluent:kafka-schema-registry:7.5.3")
 
     runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
